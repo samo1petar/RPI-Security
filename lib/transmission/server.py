@@ -13,11 +13,11 @@ class Server:
         self.HEADER = 100
         self.PORT = port
         # self.SERVER = socket.gethostbyname('david.fritz.box')
-        self.SERVER = '192.168.31.200'
+        self.SERVER = '192.168.31.236'
         self.ADDR = (self.SERVER, self.PORT)
         self.FORMAT = 'utf-8'
         self.DISCONNECT_MESSAGE = '!DISCONNECT'
-        self.DATA_DIR = '/home/alfred/Projects/Security_Cameras/Data/Test_Connection'
+        self.DATA_DIR = '/home/alfred/Projects/Security_Cameras/Data/Test_Connection/images'
 
 
     def get_the_video(self, connection, address):
@@ -84,7 +84,7 @@ class Server:
 
     def run(self):
 
-        logging.basicConfig(filename=f'/home/alfred/Projects/Security_Cameras/Data/logs/server_logs_{get_time()}.txt', level=logging.DEBUG) # ToDo filename move to __init__
+        logging.basicConfig(filename=f'/home/alfred/Projects/Security_Cameras/Data/Test_Connection/logs/server_logs_{get_time()}.txt', level=logging.DEBUG) # ToDo filename move to __init__
 
         server = socket.socket(family=socket.AF_INET, type=socket.SOCK_STREAM)
         server.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
