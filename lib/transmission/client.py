@@ -13,11 +13,11 @@ class Client:
         self.HEADER = 100
         self.PORT = port
         # SERVER = socket.gethostbyname('david.fritz.box')
-        self.SERVER = "192.168.31.200"
+        self.SERVER = "192.168.31.236"
         self.ADDR = (self.SERVER, self.PORT)
         self.FORMAT = 'utf-8'
         self.DISCONNECT_MESSAGE = '!DISCONNECT'
-        self.DATA_DIR = '/home/rpi5/Security_2/images'
+        self.DATA_DIR = '/home/rpi5/RPI-Security/images'
         self.PREFIX = f'{name}@192.168.31.89'
 
     @staticmethod
