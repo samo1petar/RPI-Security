@@ -14,6 +14,9 @@ if __name__ == '__main__':
 
     args = parser.parse_args()
 
+    if args.client is None:
+        args.client = False
+
     assert args.server ^ args.client, f'This script needs to be called as a client or as a server, not both, not none.'
 
     if args.client:
