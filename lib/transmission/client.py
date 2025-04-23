@@ -13,7 +13,7 @@ class Client:
     def __init__(self, params: Any, port: int = 7024):
         self.HEADER = 100
         self.PORT = port
-        self.SERVER = socket.gethostbyname(params.server)
+        self.SERVER = socket.gethostbyname(params.server_name)
         self.ADDR = (self.SERVER, self.PORT)
         self.FORMAT = 'utf-8'
         self.DISCONNECT_MESSAGE = '!DISCONNECT'
@@ -30,7 +30,7 @@ class Client:
 
     def get_all_but_last(self, videos_list: List[str]) -> List[str]: # ToDo - after argmax move, staticmethod can be used
         video_names = [x.rsplit('.', 1)[0] for x in videos_list]
-        videos_timestamps = [time.mktime(datetime.datetime.strptime(x, '%Y-%m-%d_%H-%M-%S').timetuple()) for x in
+        videos_timestamps = [time.mktime(datetime.datetime.strptime(x.split('_', 1)[1], '%Y-%m-%d_%H-%M-%S').timetuple()) for x in
                              video_names]
         max_video_index = self.argmax(videos_timestamps)
 
