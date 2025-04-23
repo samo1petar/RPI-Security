@@ -23,7 +23,13 @@ if __name__ == '__main__':
         'AfMode': controls.AfModeEnum.Manual,
         'LensPosition': 0.0
     })
-    config = cam.create_still_configuration(transform=Transform(hflip=True, vflip=True))
+
+    mode = cam.sensor_modes[1]
+
+    config = cam.create_preview_configuration(
+        sensor={'output_size': mode['size'], 'bit_depth': mode['bit_depth']},
+        transform=Transform(hflip=True, vflip=True),
+    )
     cam.configure(config)
     cam.start()
 
@@ -32,7 +38,7 @@ if __name__ == '__main__':
     while True:
         if time.time() - start > 1:
             image = cam.capture_array('main')
-            # image = cv2.rotate(image, cv2.ROTATE_180_CLOCKWISE)
+            image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
             save_image(image, args.name)
             start = time.time()
         else:
