@@ -13,12 +13,12 @@ class Client:
     def __init__(self, params: Any, port: int = 7024):
         self.HEADER = 100
         self.PORT = port
-        self.SERVER = "192.168.31.236"
+        self.SERVER = socket.gethostbyname(params.server)
         self.ADDR = (self.SERVER, self.PORT)
         self.FORMAT = 'utf-8'
         self.DISCONNECT_MESSAGE = '!DISCONNECT'
         self.DATA_DIR = f'/home/{params.name}/RPI-Security/images'
-        self.PREFIX = f'{params.name}@192.168.31.89'
+        self.PREFIX = f'{params.name}@{socket.gethostbyname(params.hostname)}'
 
     @staticmethod
     def read_files(location: str) -> List[str]:

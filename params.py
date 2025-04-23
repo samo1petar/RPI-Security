@@ -1,7 +1,7 @@
 
 
 class RPIZ1:
-    name = 'RPIZ1'
+    name = 'rpiz1'
     hostname = 'raspberrypiz1.local'
     location = 'main door'
     server_name = 'alfred'
@@ -9,7 +9,7 @@ class RPIZ1:
 
 
 class RPIZ2:
-    name = 'RPIZ2'
+    name = 'rpiz2'
     hostname = 'raspberrypiz2.local'
     location = 'terrace'
     server_name = 'alfred'
