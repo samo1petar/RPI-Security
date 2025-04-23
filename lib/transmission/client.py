@@ -3,22 +3,22 @@ import time
 import socket
 import logging
 import datetime
-from typing import List
+from typing import Any, List
 from lib.utils.timestamp import get_time
+
 
 
 class Client:
 
-    def __init__(self, name: str = 'rpi5', port: int = 7024):
+    def __init__(self, params: Any, port: int = 7024):
         self.HEADER = 100
         self.PORT = port
-        # SERVER = socket.gethostbyname('david.fritz.box')
         self.SERVER = "192.168.31.236"
         self.ADDR = (self.SERVER, self.PORT)
         self.FORMAT = 'utf-8'
         self.DISCONNECT_MESSAGE = '!DISCONNECT'
-        self.DATA_DIR = f'/home/{name}/RPI-Security/images'
-        self.PREFIX = f'{name}@192.168.31.89'
+        self.DATA_DIR = f'/home/{params.name}/RPI-Security/images'
+        self.PREFIX = f'{params.name}@192.168.31.89'
 
     @staticmethod
     def read_files(location: str) -> List[str]:

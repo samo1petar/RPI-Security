@@ -3,13 +3,14 @@ import logging
 import socket
 import threading
 import subprocess
+from typing import Any
 from lib.utils.timestamp import get_time
 
 
 
 class Server:
 
-    def __init__(self, port: int = 7024):
+    def __init__(self, params: Any, port: int = 7024):
         self.HEADER = 100
         self.PORT = port
         # self.SERVER = socket.gethostbyname('david.fritz.box')
