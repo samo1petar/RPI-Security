@@ -103,5 +103,5 @@ class Client:
 
                     self.send(self.DISCONNECT_MESSAGE, client)
 
-            logging.debug(f'[{get_time()}] Sleeping for 30 min...')
-            time.sleep(1)
+            logging.debug(f'[{get_time()}] Sleeping for 0.1 sec...')
+            time.sleep(0.1)
