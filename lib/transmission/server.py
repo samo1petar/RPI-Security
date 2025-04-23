@@ -13,8 +13,7 @@ class Server:
     def __init__(self, params: Any, port: int = 7024):
         self.HEADER = 100
         self.PORT = port
-        # self.SERVER = socket.gethostbyname('david.fritz.box')
-        self.SERVER = '192.168.31.236'
+        self.SERVER = params.ip
         self.ADDR = (self.SERVER, self.PORT)
         self.FORMAT = 'utf-8'
         self.DISCONNECT_MESSAGE = '!DISCONNECT'
@@ -44,8 +43,10 @@ class Server:
 
                     if file_name not in os.listdir(self.DATA_DIR):
                         logging.debug(f'[{get_time()}] [{address}] Starting the copy command {msg}:{file_name}.')
+                        if not os.path.exists(os.path.join(self.DATA_DIR, msg.split(':', 1)[0])):
+                            os.makedirs(os.path.join(self.DATA_DIR, msg.split(':', 1)[0]))
                         status = subprocess.run(
-                            f"scp {msg} {self.DATA_DIR}/{msg.split(':')[0]}-{file_name}",
+                            f"scp {msg} {os.path.join(self.DATA_DIR, msg.split(':', 1)[0])}/{msg.split(':')[0]}-{file_name}",
                             shell=True,
                             executable='/bin/bash',
                             text=True,

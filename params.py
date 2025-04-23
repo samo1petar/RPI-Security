@@ -16,5 +16,6 @@ class RPIZ2:
     LensPosition = 0.0  # ToDo check
 
 
-class Server:
-    name = 'Server'
+class ServerParams:
+    name = 'alfred'
+    ip = '192.168.31.236'
