@@ -1,3 +1,6 @@
 venv
 __pycache__
-
+images/
+logs/
+recordings/
+system_metrics_log.csv
