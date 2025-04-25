@@ -5,19 +5,22 @@ import hashlib
 import shutil
 import subprocess
 import logging
+from threading import Thread
 from logging.handlers import TimedRotatingFileHandler
 from watchdog.observers import Observer
 from watchdog.events import FileSystemEventHandler
+
 
 # CONFIGURATION
 DASHBOARD_URL = "http://alfred.local:5000/upload"
 CAMERA_NAME = "RPiZ1 Camera"
 RECORD_DIR = "/home/rpiz1/RPI-Security/recordings"
 PENDING_DIR = os.path.join(RECORD_DIR, "pending")
-#LOG_FILE = os.path.join(RECORD_DIR, "upload_log.txt")
 MAX_RETRIES = 3
 RETRY_DELAY = 5  # seconds
-USE_COMPRESSION = True  # Toggle .mp4 compression
+CHECK_INTERVAL = 5
+IDLE_TIME_REQUIRED = 10  # seconds
+USE_COMPRESSION = True  # Use ffmpeg to compress .avi to .mp4
 
 LOG_DIR = os.path.join(RECORD_DIR, "logs")
 os.makedirs(LOG_DIR, exist_ok=True)
@@ -30,14 +33,11 @@ formatter = logging.Formatter('[%(asctime)s] %(message)s', datefmt='%Y-%m-%d %H:
 handler.setFormatter(formatter)
 logger.addHandler(handler)
 
-# Ensure pending folder exists
+# Ensure required dirs
 os.makedirs(PENDING_DIR, exist_ok=True)
 
-#def log(message):
-#    timestamp = time.strftime("%Y-%m-%d %H:%M:%S")
-#    with open(LOG_FILE, 'a') as logf:
-#        logf.write(f"[{timestamp}] {message}\n")
-#    print(message)
+# Track files waiting for processing
+pending_files = {}
 
 def log(msg):
     logger.info(msg)
@@ -85,15 +85,26 @@ def upload_file(filepath):
     log(f"⚠️ Giving up on {filepath} after {MAX_RETRIES} attempts.")
     return False
 
-class UploadHandler(FileSystemEventHandler):
-    def on_created(self, event):
-        if not event.is_directory and event.src_path.endswith('.avi'):
-            original_path = event.src_path
-            filename = os.path.basename(original_path)
+def background_processor():
+    while True:
+        now = time.time()
+        ready_files = []
+
+        for path, last_mod_time in list(pending_files.items()):
+            if os.path.exists(path):
+                current_mod_time = os.path.getmtime(path)
+                if current_mod_time == last_mod_time and now - current_mod_time >= IDLE_TIME_REQUIRED:
+                    ready_files.append(path)
+            else:
+                pending_files.pop(path, None)
+
+        for filepath in ready_files:
+            pending_files.pop(filepath, None)
+            filename = os.path.basename(filepath)
             temp_path = os.path.join(PENDING_DIR, filename)
 
             try:
-                shutil.move(original_path, temp_path)
+                shutil.move(filepath, temp_path)
                 log(f"📂 Moved {filename} to pending/")
 
                 # Compress
@@ -110,11 +121,26 @@ class UploadHandler(FileSystemEventHandler):
             except Exception as e:
                 log(f"🚨 Error processing {filename}: {e}")
 
+        time.sleep(CHECK_INTERVAL)
+
+class RecordingWatcher(FileSystemEventHandler):
+    def on_created(self, event):
+        if not event.is_directory and event.src_path.endswith('.avi'):
+            path = event.src_path
+            pending_files[path] = os.path.getmtime(path)
+            log(f"🕒 Detected new file: {path}")
+
+    def on_modified(self, event):
+        if not event.is_directory and event.src_path.endswith('.avi'):
+            pending_files[event.src_path] = os.path.getmtime(event.src_path)
+
 if __name__ == "__main__":
     observer = Observer()
-    observer.schedule(UploadHandler(), RECORD_DIR, recursive=False)
+    observer.schedule(RecordingWatcher(), RECORD_DIR, recursive=False)
     observer.start()
-    log("📡 Watching for new recordings...")
+
+    Thread(target=background_processor, daemon=True).start()
+    log("📡 Watching for complete recordings...")
 
     try:
         while True:
