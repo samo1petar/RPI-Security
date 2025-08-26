@@ -12,7 +12,7 @@ from watchdog.events import FileSystemEventHandler
 
 
 # CONFIGURATION
-DASHBOARD_URL = "http://alfred.local:5000/upload"
+DASHBOARD_URL = "http://raspberrypi.local:5000/upload"
 CAMERA_NAME = "RPiZ1 Camera"
 RECORD_DIR = "/home/rpiz1/RPI-Security/recordings"
 PENDING_DIR = os.path.join(RECORD_DIR, "pending")

@@ -33,7 +33,7 @@ record_dir = "recordings"
 os.makedirs(record_dir, exist_ok=True)
 
 # Email settings (EDIT THIS)
-EMAIL_ENABLED = True
+EMAIL_ENABLED = False
 EMAIL_ADDRESS = "rpiz1@home_zapresic.hr"
 EMAIL_PASSWORD = ""
 EMAIL_TO = "petar.pavlovic.37@gmail.com"
